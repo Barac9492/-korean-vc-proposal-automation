@@ -1,0 +1,25 @@
+{
+  "builds": [
+    {
+      "src": "app.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "app.py"
+    }
+  ],
+  "env": {
+    "STREAMLIT_SERVER_HEADLESS": "true",
+    "STREAMLIT_SERVER_PORT": "8501",
+    "STREAMLIT_BROWSER_GATHER_USAGE_STATS": "false",
+    "STREAMLIT_SERVER_ENABLE_CORS": "false"
+  },
+  "functions": {
+    "app.py": {
+      "maxDuration": 30
+    }
+  }
+}
