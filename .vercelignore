@@ -1,0 +1,27 @@
+# Ignore Python files for static deployment
+*.py
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore documentation files
+*.md
+!README.md
+
+# Ignore development files
+.git/
+.claude/
+setup.sh
+test_*.py
+
+# Ignore API directory
+api/
+
+# Ignore requirements
+requirements*.txt
+runtime.txt
+
+# Keep only essential files for static site
+# index.html will be served
+# vercel.json for configuration
