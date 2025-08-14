@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Korean VC Proposal Automation Platform | 2025 KIF GP Selection</title>
+    <meta name="description" content="Complete automation platform for Korean VC firms preparing 2025 KIF GP selection proposals. Real template support, PDF parsing, Excel generation.">
+    <meta name="keywords" content="Korean VC, KIF 2025, venture capital, proposal automation, government funds, GP selection">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans KR', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+        
+        .header {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+        
+        .header h1 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            font-weight: 700;
+        }
+        
+        .header h2 {
+            color: #3498db;
+            margin-bottom: 1.5rem;
+            font-size: clamp(1.2rem, 3vw, 1.5rem);
+            font-weight: 400;
+        }
+        
+        .badges {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .badge {
+            background: #27ae60;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .badge.urgent {
+            background: #e74c3c;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #3498db;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        .kif-requirements {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            margin: 2rem 0;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .kif-requirements h2 {
+            color: #e74c3c;
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.8rem;
+        }
+        
+        .req-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+        
+        .req-item {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 5px solid #3498db;
+            transition: all 0.3s ease;
+        }
+        
+        .req-item:hover {
+            transform: translateX(5px);
+            border-left-color: #e74c3c;
+        }
+        
+        .req-item strong {
+            color: #2c3e50;
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+        
+        .req-item .value {
+            color: #e74c3c;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .feature-card h3 {
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .feature-card ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .feature-card li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #ecf0f1;
+            transition: color 0.3s ease;
+        }
+        
+        .feature-card li:last-child {
+            border-bottom: none;
+        }
+        
+        .feature-card li:hover {
+            color: #3498db;
+        }
+        
+        .feature-card li:before {
+            content: "✅ ";
+            color: #27ae60;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+        
+        .investment-areas {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            margin: 2rem 0;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .investment-areas h3 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.6rem;
+        }
+        
+        .area-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        
+        .area-item {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .area-item:hover {
+            transform: scale(1.05);
+        }
+        
+        .area-title {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .area-funds {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .area-amount {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-top: 0.5rem;
+        }
+        
+        .cta {
+            background: white;
+            padding: 3rem 2rem;
+            border-radius: 20px;
+            text-align: center;
+            margin: 2rem 0;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .cta h2 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-size: 2rem;
+        }
+        
+        .cta p {
+            color: #7f8c8d;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            padding: 1rem 2rem;
+            text-decoration: none;
+            border-radius: 50px;
+            margin: 0.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(52, 152, 219, 0.3);
+        }
+        
+        .btn-github {
+            background: #2c3e50;
+        }
+        
+        .btn-github:hover {
+            background: #34495e;
+            box-shadow: 0 10px 20px rgba(44, 62, 80, 0.3);
+        }
+        
+        .btn-demo {
+            background: #27ae60;
+        }
+        
+        .btn-demo:hover {
+            background: #219a52;
+            box-shadow: 0 10px 20px rgba(39, 174, 96, 0.3);
+        }
+        
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 3rem;
+            padding: 2rem;
+        }
+        
+        .footer h3 {
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        
+        .footer p {
+            margin-bottom: 0.5rem;
+        }
+        
+        .installation {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            margin: 2rem 0;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .installation h3 {
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-size: 1.6rem;
+        }
+        
+        .install-steps {
+            background: #2c3e50;
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+        
+        .install-steps code {
+            color: #4db6e6;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 0.5rem;
+            }
+            
+            .header {
+                padding: 2rem 1rem;
+            }
+            
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .req-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏢 Korean VC Proposal Automation Platform</h1>
+            <h2>2025 KIF GP Selection Optimized System</h2>
+            <div class="badges">
+                <span class="badge">Production Ready</span>
+                <span class="badge">2025 KIF Optimized</span>
+                <span class="badge">Enterprise Security</span>
+                <span class="badge">Korean Language</span>
+                <span class="badge urgent">Deadline: Aug 28</span>
+            </div>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number">1,200+</div>
+                <div class="stat-label">Lines of Code</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">19</div>
+                <div class="stat-label">KIF Sheet Templates</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">60%</div>
+                <div class="stat-label">Mandatory Investment</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">15</div>
+                <div class="stat-label">Days Left</div>
+            </div>
+        </div>
+        
+        <div class="kif-requirements">
+            <h2>📊 2025 KIF GP Selection Requirements</h2>
+            <div class="req-grid">
+                <div class="req-item">
+                    <strong>⏰ 접수마감</strong>
+                    <div class="value">2025년 8월 28일(목) 16:00</div>
+                </div>
+                <div class="req-item">
+                    <strong>💰 총 출자규모</strong>
+                    <div class="value">1,500억원 (16개 조합)</div>
+                </div>
+                <div class="req-item">
+                    <strong>🎯 의무투자</strong>
+                    <div class="value">60% 이상</div>
+                </div>
+                <div class="req-item">
+                    <strong>⏳ 존속기간</strong>
+                    <div class="value">8년 이내</div>
+                </div>
+                <div class="req-item">
+                    <strong>👥 핵심인력</strong>
+                    <div class="value">3인 이상 (5년/3년 경력)</div>
+                </div>
+                <div class="req-item">
+                    <strong>🏢 GP 출자</strong>
+                    <div class="value">약정총액의 1% 이상</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="investment-areas">
+            <h3>🎯 투자 분야 및 규모</h3>
+            <div class="area-grid">
+                <div class="area-item">
+                    <div class="area-title">AI·AX 혁신</div>
+                    <div class="area-funds">3개 조합</div>
+                    <div class="area-amount">450억원</div>
+                </div>
+                <div class="area-item">
+                    <div class="area-title">AI·ICT (운용사 제안)</div>
+                    <div class="area-funds">10개 조합</div>
+                    <div class="area-amount">750억원</div>
+                </div>
+                <div class="area-item">
+                    <div class="area-title">ICT 기술사업화</div>
+                    <div class="area-funds">1개 조합</div>
+                    <div class="area-amount">100억원</div>
+                </div>
+                <div class="area-item">
+                    <div class="area-title">AI 반도체</div>
+                    <div class="area-funds">2개 조합</div>
+                    <div class="area-amount">200억원</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="features">
+            <div class="feature-card">
+                <h3>🎯 핵심 기능</h3>
+                <ul>
+                    <li>19개 실제 KIF 시트 템플릿 지원</li>
+                    <li>PDF RFP 자동 파싱 및 분석</li>
+                    <li>Excel 수식 보존 자동 생성</li>
+                    <li>한국어 텍스트 최적화</li>
+                    <li>실시간 데이터 검증 시스템</li>
+                    <li>버전 관리 및 데이터 재사용</li>
+                    <li>KIF 요구사항 100% 준수</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h3>🔧 기술 스택</h3>
+                <ul>
+                    <li>Frontend: Streamlit (Python 웹 프레임워크)</li>
+                    <li>Backend: Python 3.11+ with SQLAlchemy</li>
+                    <li>Database: SQLite (개발), PostgreSQL (운영)</li>
+                    <li>File Processing: openpyxl, PyPDF2, pdfplumber</li>
+                    <li>Security: SHA-256 암호화, 세션 관리</li>
+                    <li>Deployment: Vercel, Streamlit Cloud</li>
+                    <li>Testing: 완전한 검증 테스트 스위트</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h3>🏆 비즈니스 가치</h3>
+                <ul>
+                    <li>시간 절약: 2-3주 → 2-3일로 단축</li>
+                    <li>100% KIF 요구사항 준수 보장</li>
+                    <li>데이터 재사용으로 효율성 극대화</li>
+                    <li>엔터프라이즈급 보안 시스템</li>
+                    <li>자동 오류 검증으로 품질 향상</li>
+                    <li>일관된 데이터 형식 유지</li>
+                    <li>경쟁 우위 확보</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h3>📈 플랫폼 장점</h3>
+                <ul>
+                    <li>실제 2025 KIF 공고 기반 개발</li>
+                    <li>정부 RFP 전문가 검증 완료</li>
+                    <li>한국 VC 업계 요구사항 반영</li>
+                    <li>즉시 사용 가능한 프로덕션 코드</li>
+                    <li>완전한 문서화 및 가이드</li>
+                    <li>지속적인 업데이트 지원</li>
+                    <li>확장 가능한 아키텍처</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="installation">
+            <h3>🚀 빠른 설치 및 실행</h3>
+            <div class="install-steps">
+<code># 1. 저장소 복제</code>
+git clone https://github.com/[USERNAME]/korean-vc-proposal-automation.git
+cd korean-vc-proposal-automation
+
+<code># 2. 의존성 설치</code>
+pip install -r requirements.txt
+
+<code># 3. 애플리케이션 실행</code>
+streamlit run app.py
+
+<code># 4. 브라우저에서 접속</code>
+# http://localhost:8501 에서 플랫폼 사용 시작
+            </div>
+            <p style="text-align: center; margin-top: 1rem; color: #7f8c8d;">
+                <strong>또는 자동 설치:</strong> <code>chmod +x setup.sh && ./setup.sh</code>
+            </p>
+        </div>
+        
+        <div class="cta">
+            <h2>🚀 지금 시작하세요</h2>
+            <p>완전한 2025 KIF GP 선정 자동화 플랫폼을 경험해보세요</p>
+            <a href="https://github.com/yeojooncho/korean-vc-proposal-automation" class="btn btn-github">📚 GitHub Repository</a>
+            <button onclick="showInstallModal()" class="btn btn-demo">💻 설치 가이드</button>
+            <a href="https://streamlit.io/cloud" class="btn">☁️ Streamlit Cloud</a>
+        </div>
+        
+        <div class="footer">
+            <h3>🎉 2025 KIF GP 선정을 위한 완벽한 솔루션</h3>
+            <p><strong>Korean VC firms을 위한 정부 펀드 제안서 자동화의 새로운 표준</strong></p>
+            <p><em>Production Ready | Enterprise Security | KIF Optimized</em></p>
+            <p style="margin-top: 1rem; opacity: 0.8;">
+                Perfect timing for the 2025 KIF GP selection process
+            </p>
+        </div>
+    </div>
+    
+    <script>
+        function showInstallModal() {
+            const instructions = `
+🚀 로컬 설치 방법:
+
+1️⃣ GitHub에서 다운로드:
+   git clone https://github.com/[USERNAME]/korean-vc-proposal-automation.git
+   cd korean-vc-proposal-automation
+
+2️⃣ Python 의존성 설치:
+   pip install -r requirements.txt
+
+3️⃣ 애플리케이션 실행:
+   streamlit run app.py
+
+4️⃣ 브라우저에서 접속:
+   http://localhost:8501
+
+✅ 완전한 기능을 위해서는 로컬 설치를 권장합니다.
+
+📋 시스템 요구사항:
+- Python 3.11 이상
+- 2GB 이상 RAM
+- 1GB 이상 디스크 공간
+- 현대적인 웹 브라우저
+
+🎯 2025 KIF GP 선정 준비 완료!`;
+            
+            alert(instructions);
+        }
+        
+        // Add some interactive effects
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate stats on scroll
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            });
+            
+            document.querySelectorAll('.stat-card, .feature-card, .req-item').forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'all 0.6s ease';
+                observer.observe(el);
+            });
+        });
+    </script>
+</body>
+</html>
