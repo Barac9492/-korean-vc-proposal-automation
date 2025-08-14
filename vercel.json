@@ -1,11 +1,9 @@
 {
-  "buildCommand": "",
-  "outputDirectory": ".",
+  "trailingSlash": false,
   "routes": [
     {
       "src": "/(.*)",
       "dest": "/index.html"
     }
-  ],
-  "functions": {}
+  ]
 }
